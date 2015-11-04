@@ -2,9 +2,7 @@ from charms.reactive import (
     when,
     set_state,
     remove_state,
-    is_state,
-    main,
-    hook
+    main
 )
 
 from os import path
@@ -17,8 +15,7 @@ from charmhelpers.core.templating import render
 from nodejs import node_dist_dir, node_switch, npm
 
 # ./lib/ircanywherelib.py
-from ircanywherelib import (git_clone,
-                            run_install_script)
+from ircanywherelib import git_clone
 
 
 # REACTORS --------------------------------------------------------------------
