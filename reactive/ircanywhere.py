@@ -14,7 +14,7 @@ from charmhelpers.core import hookenv, host
 from charmhelpers.core.templating import render
 
 # ./lib/nodejs.py
-from nodejs import node_dist_dir, node_switch
+from nodejs import node_dist_dir, node_switch, npm
 
 # ./lib/ircanywherelib.py
 from ircanywherelib import (git_clone,
@@ -62,9 +62,8 @@ def app_install():
 
     # Update application
     git_clone(config['ircanywhere-url'], config['ircanywhere-release'])
-
-    # Runs the install.sh script provided by upstream
-    run_install_script()
+    npm('install')
+    npm('run gulp')
 
     # Writes configuration
     ctx = {
