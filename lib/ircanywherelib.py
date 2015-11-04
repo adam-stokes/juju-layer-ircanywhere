@@ -4,6 +4,7 @@ from shutil import rmtree
 from subprocess import check_call, CalledProcessError
 from charmhelpers.core import hookenv
 from charmhelpers.fetch import apt_install
+from charmhelpers.core.templating import render
 
 # node-layer
 from nodejs import node_dist_dir
@@ -34,15 +35,17 @@ def git_clone(upstream, release):
         sys.exit(1)
 
 
-def run_install_script():
-    """ Runs the provided ./install.sh script
-    from upstream
-    """
-    try:
-        os.chdir(node_dist_dir())
-        hookenv.log("Running IRCAnywhere install script", 'debug')
-        check_call("./install.sh", shell=True)
-    except CalledProcessError as e:
-        hookenv.status_set('blocked',
-                           'Problem with install script: {}'.format(e))
-        sys.exit(1)
+def render_config():
+    config = hookenv.config()
+    # Writes configuration
+    ctx = {
+        'irc_server': config['ircanywhere-server'],
+        'port': config['ircanywhere-port'],
+        'realname': config['ircanywhere-realname'],
+        'password': config['ircanywhere-password']
+    }
+    hookenv.status_set('maintenance',
+                       'Rendering IRCAnywhere config: {}'.format(ctx))
+    render(source='config.js',
+           target=os.path.join(node_dist_dir(), 'config.js'),
+           context=ctx)

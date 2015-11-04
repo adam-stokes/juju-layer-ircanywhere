@@ -29,3 +29,7 @@ options:
     type: string
     default: ""
     description: If server requires password, enter that here.
+  node-version:
+    type: string
+    default: "5.x"
+    description: Supported Node.js version for IRCAnywhere
