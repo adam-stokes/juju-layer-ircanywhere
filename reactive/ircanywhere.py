@@ -18,8 +18,7 @@ from nodejs import node_dist_dir, node_switch
 
 # ./lib/ircanywherelib.py
 from ircanywherelib import (git_clone,
-                            run_install_script,
-                            write_config_js)
+                            run_install_script)
 
 config = hookenv.config()
 
@@ -57,19 +56,7 @@ def app_install():
     # Runs the install.sh script provided by upstream
     run_install_script()
 
-    # Write IRCAnywhere configuration file `config.js`
-    write_config_js()
-
-    # Install complete, remove install bit
-    remove_state('ircanywhere.install')
-
-    # Let everyone know our application is ready
-    set_state('ircanywhere.installed')
-
-
-@when('ircanywhere.installed')
-def start():
-    hookenv.status_set('maintenance', 'Starting IRCAnywhere application')
+    # Writes configuration
     ctx = {
         'irc_server': config['ircanywhere-server'],
         'port': config['ircanywhere-port'],
@@ -81,6 +68,17 @@ def start():
     render(source='files/config.js',
            target=path.join(node_dist_dir(), 'config.js'),
            context=ctx)
+
+    # Install complete, remove install bit
+    remove_state('ircanywhere.install')
+
+    # Let everyone know our application is ready
+    set_state('ircanywhere.installed')
+
+
+@when('ircanywhere.installed')
+def start():
+    hookenv.status_set('maintenance', 'Starting IRCAnywhere application')
 
     # Render upstart job
     ctx = {

@@ -8,3 +8,6 @@ description: |
   javascript. It's designed to be a free alternative to IRCCloud. Unlike
   IRCCloud where you have little control over uptime and the privacy of your
   users, IRCAnywhere aims to give the control to you.
+requires:
+  http:
+    interface: http

@@ -1,1 +1,1 @@
-includes: ['layer:basic', 'layer:nodejs']
+includes: ['layer:basic', 'layer:nodejs', 'interface:http']
