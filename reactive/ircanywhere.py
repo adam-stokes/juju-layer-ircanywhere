@@ -36,10 +36,20 @@ def install_vhost():
                'port': config['nginx-port']
            })
     set_state('nginx.restart')
-    set_state('ircanywhere.install')
+    set_state('ircanywhere.install.prereqs')
 
 
-@when('ircanywhere.install')
+@when('ircanywhere.install.prereqs')
+def install_prereqs():
+    """ Installs node
+    """
+    config = hookenv.config()
+    node_switch(config['node-version'])
+    remove_state('ircanywhere.install.prereqs')
+    set_state('ircanywhere.install.app')
+
+
+@when('ircanywhere.install.app')
 def app_install():
     """ Performs application installation
     """
@@ -48,7 +58,7 @@ def app_install():
     # Clear this so it gets called once install completed
     remove_state('ircanywhere.installed')
 
-    node_switch(config['node-version'])
+    hookenv.status_set('maintenance', 'Installing Node for IRCAnywhere')
 
     # Update application
     git_clone(config['ircanywhere-url'], config['ircanywhere-release'])
@@ -70,7 +80,7 @@ def app_install():
            context=ctx)
 
     # Install complete, remove install bit
-    remove_state('ircanywhere.install')
+    remove_state('ircanywhere.install.app')
 
     # Let everyone know our application is ready
     set_state('ircanywhere.installed')
