@@ -58,8 +58,6 @@ def app_install():
     # Clear this so it gets called once install completed
     remove_state('ircanywhere.installed')
 
-    hookenv.status_set('maintenance', 'Installing Node for IRCAnywhere')
-
     # Update application
     git_clone(config['ircanywhere-url'], config['ircanywhere-release'])
     npm('install')
