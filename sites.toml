@@ -1,0 +1,5 @@
+[default]
+# Only a single vhost, dont define servername
+servername = "_"
+location = "/irc"
+proxy_port = 3000
