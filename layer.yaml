@@ -1,1 +1,1 @@
-includes: ['layer:basic', 'layer:nodejs', 'interface:http']
+includes: ['layer:basic', 'layer:nodejs', 'layer:layers/nginx-proxy']

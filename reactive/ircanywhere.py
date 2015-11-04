@@ -20,35 +20,35 @@ from nodejs import node_dist_dir, node_switch
 from ircanywherelib import (git_clone,
                             run_install_script)
 
-config = hookenv.config()
 
+# REACTORS --------------------------------------------------------------------
+@when('nginx.available')
+def install_vhost():
+    config = hookenv.config()
+    hookenv.status_set('maintenance',
+                       'Loading IRCAnywhere vhost and restarting nginx')
 
-# HOOKS -----------------------------------------------------------------------
-@hook('install')
-def install():
-    """ Install dependencies for application
-    """
-    # Install our node.js runtime, our app supports version 4.x
-    if not is_state('nodejs.installed'):
-        node_switch(config['node-version'])
-
-    # Perform our application install
+    render(source='vhost.conf',
+           target='/etc/nginx/sites-enabled/default',
+           context={
+               'application_address': hookenv.unit_public_ip(),
+               'application_port': config['ircanywhere-web-port'],
+               'port': config['nginx-port']
+           })
+    set_state('nginx.restart')
     set_state('ircanywhere.install')
 
 
-@hook('config-changed')
-def config_changed():
-    if config.changed('node-version'):
-        node_switch(config['node-version'])
-
-
-# REACTORS --------------------------------------------------------------------
 @when('ircanywhere.install')
 def app_install():
     """ Performs application installation
     """
+    config = hookenv.config()
+
     # Clear this so it gets called once install completed
     remove_state('ircanywhere.installed')
+
+    node_switch(config['node-version'])
 
     # Update application
     git_clone(config['ircanywhere-url'], config['ircanywhere-release'])
@@ -65,7 +65,7 @@ def app_install():
     }
     hookenv.status_set('maintenance',
                        'Rendering IRCAnywhere config: {}'.format(ctx))
-    render(source='files/config.js',
+    render(source='config.js',
            target=path.join(node_dist_dir(), 'config.js'),
            context=ctx)
 
@@ -78,13 +78,15 @@ def app_install():
 
 @when('ircanywhere.installed')
 def start():
+    config = hookenv.config()
+
     hookenv.status_set('maintenance', 'Starting IRCAnywhere application')
 
     # Render upstart job
     ctx = {
         'dist_dir': node_dist_dir()
     }
-    render(source='files/ircanywhere-upstart.conf',
+    render(source='ircanywhere-upstart.conf',
            target='/etc/init/ircanywhere.conf',
            context=ctx)
 
@@ -97,6 +99,7 @@ def start():
 @when_file_changed('/etc/init/ircanywhere.conf')
 def restart():
     hookenv.status_set('maintenance', 'Restarting IRCAnywhere service')
+    set_state('nginx.restart')
     host.service_restart('ircanywhere')
 
 

@@ -9,6 +9,10 @@ options:
     default: 'development'
     description: |
       Release of IRCAnywhere
+  ircanywhere-web-port:
+    type: int
+    default: 3000
+    description: Web port IRCAnywhere is listening on
   ircanywhere-server:
     type: string
     default: "irc.freenode.net"
