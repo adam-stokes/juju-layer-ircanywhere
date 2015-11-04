@@ -1,0 +1,27 @@
+options:
+  ircanywhere-url:
+    type: string
+    default: "https://github.com/ircanywhere/ircanywhere.git"
+    description: |
+      Upstream Git repo for IRCAnywhere
+  ircanywhere-release:
+    type: string
+    default: 'development'
+    description: |
+      Release of IRCAnywhere
+  ircanywhere-server:
+    type: string
+    default: "irc.freenode.net"
+    description: Hostname of default network to connect to
+  ircanywhere-port:
+    type: int
+    default: 6667
+    description: Port to connect default client to
+  ircanywhere-realname:
+    type: string
+    default: "IRC Anywhere Client"
+    description: gecos for default irc clients
+  ircanywhere-password:
+    type: string
+    default: ""
+    description: If server requires password, enter that here.

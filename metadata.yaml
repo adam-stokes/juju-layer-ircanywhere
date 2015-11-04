@@ -1,0 +1,10 @@
+name: ircanywhere
+summary: |
+  IRCAnywhere web based multi-user IRC bouncer built for teams
+maintainers: ['Adam Stokes <adam.stokes@ubuntu.com>']
+tags: ['nodejs', 'javascript', 'irc']
+description: |
+  IRCAnywhere is an open source web based IRC bouncer application written in
+  javascript. It's designed to be a free alternative to IRCCloud. Unlike
+  IRCCloud where you have little control over uptime and the privacy of your
+  users, IRCAnywhere aims to give the control to you.
